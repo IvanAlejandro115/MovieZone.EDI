@@ -1,0 +1,12 @@
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #121212 !important;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+.page {
+    background-color: #121212;
+    min-height: 100vh;
+}

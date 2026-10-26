@@ -1,0 +1,86 @@
+@page "/noticias"
+@rendermode InteractiveServer
+
+<!-- 🟢 ======================================================== -->
+<!-- 🟢 HTML (ESTRUCTURA DE ALIMENTACIÓN DEL FEED DE NOTICIAS)   -->
+<!-- 🟢 ======================================================== -->
+<div style="display: flex; flex-direction: column; width: 100%; padding: 20px; box-sizing: border-box; font-family: system-ui, sans-serif;">
+
+    <!-- Encabezado de la Sección -->
+    <header style="margin-bottom: 30px;">
+        <h2 style="color: #ffffff; font-size: 2.5rem; font-weight: 700; margin: 0; font-family: system-ui, sans-serif;">Últimas Noticias</h2>
+        <p style="color: #9ea1a6; font-size: 1rem; margin-top: 5px;">Entérate de las novedades, rumores y anuncios más recientes del cine.</p>
+    </header>
+
+    <!-- Sección del Feed de Noticias -->
+    <main style="display: flex; flex-direction: column; gap: 20px; width: 100%;">
+
+        @foreach (var nota in ListaNoticias)
+        {
+            <!-- Convertido a NavLink con cursor pointer para que actúe como botón clickable -->
+            <NavLink href="@nota.Url" style="text-decoration: none; cursor: pointer; display: flex; background-color: #1a1c20; border-radius: 12px; overflow: hidden; border: 1px solid #333; box-shadow: 0 4px 6px rgba(0,0,0,0.3); width: 100%; height: 180px;">
+                
+                <!-- Imagen de la Noticia (Lado izquierdo) -->
+                <div style="width: 280px; height: 100%; flex-shrink: 0;">
+                    <img src="@nota.Imagen" alt="@nota.Titulo" style="width: 100%; height: 100%; object-fit: cover;" />
+                </div>
+
+                <!-- Texto de la Noticia (Lado derecho) -->
+                <div style="padding: 20px; display: flex; flex-direction: column; justify-content: center; flex-grow: 1;">
+                    <span style="color: #e5a93b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 0.5px;">
+                        @nota.Categoria • @nota.Fecha
+                    </span>
+                    <h3 style="color: #ffffff; font-size: 1.3rem; margin: 0 0 10px 0; font-weight: 600; font-family: system-ui, sans-serif;">
+                        @nota.Titulo
+                    </h3>
+                    <p style="color: #9ea1a6; font-size: 0.95rem; margin: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                        @nota.Copete
+                    </p>
+                </div>
+
+            </NavLink>
+        }
+
+    </main>
+
+</div>
+
+@code {
+    public class Noticia
+    {
+        public string Titulo { get; set; } = "";
+        public string Copete { get; set; } = "";
+        public string Imagen { get; set; } = "";
+        public string Categoria { get; set; } = "";
+        public string Fecha { get; set; } = "";
+        public string Url { get; set; } = ""; // Añadida propiedad de ruta
+    }
+
+    private List<Noticia> ListaNoticias = new List<Noticia>
+    {
+        new Noticia { 
+            Titulo = "Marvel Studios prepara el terreno para Avengers: Secret Wars", 
+            Copete = "Nuevos reportes indican que la producción comenzará a finales de este año, prometiendo revolucionar el universo cinematográfico con un despliegue de héroes nunca antes visto.", 
+            Imagen = "imagenes/Estrenos/Avengers.jpg", 
+            Categoria = "Cine", 
+            Fecha = "Hoy",
+            Url = "noticia/avengers"
+        },
+        new Noticia { 
+            Titulo = "El director de The Batman adelanta detalles oscuros de la secuela", 
+            Copete = "Se confirmó que el guion está completamente terminado y que la producción se enfocará en un caso policial aún más profundo y crudo en las calles de Gotham.", 
+            Imagen = "imagenes/Estrenos/Batman2.jpg", 
+            Categoria = "Producción", 
+            Fecha = "Ayer",
+            Url = "noticia/batman"
+        },
+        new Noticia { 
+            Titulo = "Zelda live-action: El director promete fidelidad absoluta al juego", 
+            Copete = "En una reciente entrevista, el equipo de desarrollo visual aseguró que están trabajando codo a codo con los creadores originales para recrear el reino de Hyrule de forma perfecta.", 
+            Imagen = "imagenes/Estrenos/Zelda.jpg", 
+            Categoria = "Exclusivo", 
+            Fecha = "Hace 2 días",
+            Url = "noticia/zelda"
+        }
+    };
+}

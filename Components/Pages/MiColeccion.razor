@@ -1,0 +1,241 @@
+@page "/mi-coleccion"
+@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.EntityFrameworkCore
+@inject MovieZone.AppDbContext DbContext
+
+
+
+<!-- 🟢 HTML: ESTRUCTURA CON BÚSQUEDA, PAGINACIÓN Y CRUD COMPLETO -->
+<div style="display: flex; flex-direction: column; width: 100%; padding: 20px; box-sizing: border-box; font-family: system-ui, sans-serif; color: #ffffff;">
+
+    <!-- Encabezado -->
+    <header style="margin-bottom: 25px;">
+        <h2 style="color: #ffffff; font-size: 2.5rem; font-weight: 700; margin: 0;">Mi colección</h2>
+        <p style="color: #9ea1a6; font-size: 1rem; margin-top: 5px;">Administración avanzada: Alta, Baja, Modificación, Búsqueda y Paginación en SQLite.</p>
+    </header>
+
+    <!-- 🔍 REQUERIMIENTO UNIDAD 3: BARRA DE BÚSQUEDA EN TIEMPO REAL -->
+    <div style="margin-bottom: 25px; width: 100%; max-width: 400px; display: flex; gap: 10px;">
+        <input type="text" @bind-value="textoBusqueda" @bind-value:event="oninput" @onkeyup="BuscarPeliculas" placeholder="🔍 Buscar película en la colección..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; background-color: #1a1c20; color: #ffffff; font-size: 0.95rem;" />
+    </div>
+
+    <div style="display: flex; gap: 40px; width: 100%;">
+
+        <!-- COLUMNA IZQUIERDA: Formulario Inteligente (Sirve para Altas y Modificaciones) -->
+        <div style="width: 350px; background-color: #1a1c20; padding: 25px; border-radius: 12px; border: 1px solid #333; height: fit-content; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+            <h3 style="font-size: 1.2rem; color: #e5a93b; margin-top: 0; margin-bottom: 20px; font-weight: 600;">
+                @(idSeleccionadoParaEditar == null ? "Registrar Contenido" : "Modificar Contenido")
+            </h3>
+            
+            <EditForm Model="nuevaPeli" OnValidSubmit="GuardarPelicula">
+                <DataAnnotationsValidator />
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-size: 0.9rem; color: #cfd2d6; margin-bottom: 5px; font-weight: 500;">Título de la Película:</label>
+                    <InputText @bind-Value="nuevaPeli.Titulo" placeholder="Ej: Batman Inicia" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background-color: #2d3037; color: #ffffff; box-sizing: border-box;" />
+                    <ValidationMessage For="() => nuevaPeli.Titulo" style="color: #e50914; font-size: 0.8rem; margin-top: 5px; display: block;" />
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 0.9rem; color: #cfd2d6; margin-bottom: 5px; font-weight: 500;">Género / Categoría:</label>
+                    <InputSelect @bind-Value="nuevaPeli.Etiqueta" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background-color: #2d3037; color: #ffffff; box-sizing: border-box;">
+                        <option value="">-- Seleccionar --</option>
+                        <option value="Acción / DC Comics">Acción / DC Comics</option>
+                        <option value="Aventura / Fantasía">Aventura / Fantasía</option>
+                        <option value="Terror / Paranormal">Terror / Paranormal</option>
+                        <option value="Animación / Videojuegos">Animación / Videojuegos</option>
+                    </InputSelect>
+                    <ValidationMessage For="() => nuevaPeli.Etiqueta" style="color: #e50914; font-size: 0.8rem; margin-top: 5px; display: block;" />
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" style="flex-grow: 1; background-color: #e5a93b; color: #121212; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem;">
+                        <i class="bi bi-save-fill"></i> @(idSeleccionadoParaEditar == null ? "Añadir a mi Lista" : "Guardar Cambios")
+                    </button>
+                    
+                    @if (idSeleccionadoParaEditar != null)
+                    {
+                        <button type="button" @onclick="CancelarEdicion" style="background-color: #6c757d; color: #ffffff; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+                            Cancelar
+                        </button>
+                    }
+                </div>
+            </EditForm>
+        </div>
+
+        <!-- COLUMNA DERECHA: Lista de Medios Paginada -->
+        <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="font-size: 1.3rem; margin-top: 0; margin-bottom: 20px; font-weight: 600;">Mi Colección Personal</h3>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%;">
+                    @foreach (var peli in MisMediosPaginados)
+                    {
+                        <div style="background-color: #1a1c20; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding-bottom: 15px; border: 1px solid #333; box-shadow: 0 4px 6px rgba(0,0,0,0.2); justify-content: space-between; height: 320px;">
+                            <img src="@peli.Imagen" alt="@peli.Titulo" style="width: 100%; height: 180px; object-fit: cover; background-color: #2d3037;" />
+                            
+                            <div style="padding: 0 10px; text-align: center; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1;">
+                                <div style="margin-top: 8px;">
+                                    <h4 style="color: #ffffff; font-size: 1.1rem; margin: 0 0 4px 0; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">@peli.Titulo</h4>
+                                    <span style="color: #e5a93b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px;">@peli.Etiqueta</span>
+                                </div>
+
+                                <!-- 🛠️ ACCIONES CRUD: MODIFICAR (UPDATE) Y ELIMINAR (DELETE) -->
+                                <div style="display: flex; gap: 8px; width: 90%; margin: 0 auto 5px auto;">
+                                    <!-- Botón Editar (Carga el formulario) -->
+                                    <button @onclick="() => CargarPeliculaParaEditar(peli)" style="flex-grow: 1; background-color: #0d6efd; color: #ffffff; border: none; padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; justify-content: center;">
+                                        <i class="bi bi-pencil-fill"></i> Editar
+                                    </button>
+                                    
+                                    <!-- Botón Eliminar -->
+                                    <button @onclick="() => EliminarPelicula(peli.Id)" style="background-color: #dc3545; color: #ffffff; border: none; padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 40px;">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- 📄 REQUERIMIENTO UNIDAD 3: BOTONES DE PAGINACIÓN -->
+            <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 30px; background-color: #1a1c20; padding: 10px; border-radius: 8px; border: 1px solid #333; width: fit-content; margin-left: auto; margin-right: auto;">
+                <button @onclick="PaginaAnterior" disabled="@(paginaActual == 1)" style="background-color: #333; color: #ffffff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; opacity: @(paginaActual == 1 ? "0.4" : "1")">
+                    ⏮️ Anterior
+                </button>
+                <span style="color: #cfd2d6; font-size: 0.95rem; font-weight: 500;">Página <strong>@paginaActual</strong> de @totalPaginas</span>
+                <button @onclick="PaginaSiguiente" disabled="@(paginaActual == totalPaginas || totalPaginas == 0)" style="background-color: #333; color: #ffffff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; opacity: @(paginaActual == totalPaginas || totalPaginas == 0 ? "0.4" : "1")">
+                    Siguiente ⏭️
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+@code {
+    private FormularioPeli nuevaPeli = new FormularioPeli();
+    
+    private List<MovieZone.PeliculaColeccion> MisMediosFiltrados = new List<MovieZone.PeliculaColeccion>();
+    private List<MovieZone.PeliculaColeccion> MisMediosPaginados = new List<MovieZone.PeliculaColeccion>();
+
+    private string textoBusqueda = "";
+    private int paginaActual = 1;
+    private int tamañoPagina = 3; 
+    private int totalPaginas = 1;
+    private int? idSeleccionadoParaEditar = null;
+
+    public class FormularioPeli
+    {
+        [Required(ErrorMessage = "El título es obligatorio para guardar la película")]
+        [StringLength(60, MinimumLength = 2, ErrorMessage = "El título debe tener entre 2 y 60 letras")]
+        public string Titulo { get; set; } = "";
+
+        [Required(ErrorMessage = "Debes seleccionar una categoría cinematográfica")]
+        public string Etiqueta { get; set; } = "";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var conteoBase = await DbContext.PeliculasColeccion.CountAsync();
+        if (conteoBase == 0)
+        {
+            DbContext.PeliculasColeccion.Add(new MovieZone.PeliculaColeccion { Titulo = "Batman", Etiqueta = "Acción / DC Comics", Imagen = "imagenes/batman.jpg" });
+            DbContext.PeliculasColeccion.Add(new MovieZone.PeliculaColeccion { Titulo = "John Wick", Etiqueta = "Acción / Suspenso", Imagen = "imagenes/johnwick.jpg" });
+            DbContext.PeliculasColeccion.Add(new MovieZone.PeliculaColeccion { Titulo = "Mario Bros", Etiqueta = "Animación / Videojuegos", Imagen = "imagenes/mario.jpg" });
+            await DbContext.SaveChangesAsync();
+        }
+        await RecargarDatosProcesados();
+    }
+
+    private async Task RecargarDatosProcesados()
+    {
+        var query = DbContext.PeliculasColeccion.AsQueryable();
+        if (!string.IsNullOrEmpty(textoBusqueda))
+        {
+            query = query.Where(p => p.Titulo.ToLower().Contains(textoBusqueda.ToLower().Trim()));
+        }
+
+        MisMediosFiltrados = await query.ToListAsync();
+
+        totalPaginas = (int)Math.Ceiling((double)MisMediosFiltrados.Count / tamañoPagina);
+        if (paginaActual > totalPaginas) paginaActual = Math.Max(1, totalPaginas);
+
+        MisMediosPaginados = MisMediosFiltrados
+            .Skip((paginaActual - 1) * tamañoPagina)
+            .Take(tamañoPagina)
+            .ToList();
+    }
+
+    private async Task BuscarPeliculas()
+    {
+        paginaActual = 1; 
+        await RecargarDatosProcesados();
+    }
+
+    private async Task GuardarPelicula()
+    {
+        string tituloLimpio = nuevaPeli.Titulo.ToLower().Trim();
+        string rutaImagenAsignada = "imagenes/avatar.jpg";
+
+        if (tituloLimpio.Contains("batman")) rutaImagenAsignada = "imagenes/batman.jpg";
+        else if (tituloLimpio.Contains("dune") || tituloLimpio.Contains("duna")) rutaImagenAsignada = "imagenes/duna.jpg";
+        else if (tituloLimpio.Contains("john wick")) rutaImagenAsignada = "imagenes/johnwick.jpg";
+        else if (tituloLimpio.Contains("mario")) rutaImagenAsignada = "imagenes/mario.jpg";
+        else if (tituloLimpio.Contains("wonka")) rutaImagenAsignada = "imagenes/Wonka.jpg";
+
+        if (idSeleccionadoParaEditar == null)
+        {
+            var nuevoItem = new MovieZone.PeliculaColeccion { Titulo = nuevaPeli.Titulo, Etiqueta = nuevaPeli.Etiqueta, Imagen = rutaImagenAsignada };
+            DbContext.PeliculasColeccion.Add(nuevoItem);
+        }
+        else
+        {
+            var itemExistente = await DbContext.PeliculasColeccion.FindAsync(idSeleccionadoParaEditar.Value);
+            if (itemExistente != null)
+            {
+                itemExistente.Titulo = nuevaPeli.Titulo;
+                itemExistente.Etiqueta = nuevaPeli.Etiqueta;
+                itemExistente.Imagen = rutaImagenAsignada;
+                DbContext.PeliculasColeccion.Update(itemExistente);
+            }
+            idSeleccionadoParaEditar = null;
+        }
+
+        await DbContext.SaveChangesAsync();
+        nuevaPeli = new FormularioPeli();
+        await RecargarDatosProcesados();
+    }
+
+    private void CargarPeliculaParaEditar(MovieZone.PeliculaColeccion peli)
+    {
+        idSeleccionadoParaEditar = peli.Id;
+        nuevaPeli.Titulo = peli.Titulo;
+        nuevaPeli.Etiqueta = peli.Etiqueta;
+    }
+
+    private void CancelarEdicion()
+    {
+        idSeleccionadoParaEditar = null;
+        nuevaPeli = new FormularioPeli();
+    }
+
+    private async Task EliminarPelicula(int idParaBorrar)
+    {
+        var itemEncontrado = await DbContext.PeliculasColeccion.FindAsync(idParaBorrar);
+        if (itemEncontrado != null)
+        {
+            DbContext.PeliculasColeccion.Remove(itemEncontrado);
+            await DbContext.SaveChangesAsync();
+            await RecargarDatosProcesados();
+        }
+    }
+
+    private async Task PaginaAnterior() { if (paginaActual > 1) { paginaActual--; await RecargarDatosProcesados(); } }
+    private async Task PaginaSiguiente() { if (paginaActual < totalPaginas) { paginaActual++; await RecargarDatosProcesados(); } }
+}
+

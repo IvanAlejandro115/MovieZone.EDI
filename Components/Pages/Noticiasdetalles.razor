@@ -1,0 +1,112 @@
+@page "/noticia/{urlNoticia}"
+@rendermode InteractiveServer
+
+<!-- 🟢 ======================================================== -->
+<!-- 🟢 HTML (ESTRUCTURA DE DETALLE DE LA NOTICIA)               -->
+<!-- 🟢 ======================================================== -->
+<div style="display: flex; flex-direction: column; width: 100%; padding: 40px; box-sizing: border-box; font-family: system-ui, sans-serif; color: #ffffff;">
+
+    <!-- Botón Volver -->
+    <NavLink href="noticias" style="display: inline-flex; align-items: center; color: #9ea1a6; text-decoration: none; margin-bottom: 30px; gap: 8px; font-weight: 500;">
+        <i class="bi bi-arrow-left"></i> Volver a Noticias
+    </NavLink>
+
+    @if (NoticiaSeleccionada != null)
+    {
+        <article style="max-width: 800px; background-color: #1a1c20; border-radius: 16px; overflow: hidden; border: 1px solid #333; box-shadow: 0 8px 25px rgba(0,0,0,0.5);">
+            
+            <!-- Imagen superior grande de prensa -->
+            <div style="width: 100%; height: 350px;">
+                <img src="@NoticiaSeleccionada.Imagen" alt="@NoticiaSeleccionada.Titulo" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+
+            <!-- Contenido de la Noticia -->
+            <div style="padding: 40px;">
+                <span style="color: #e5a93b; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">
+                    @NoticiaSeleccionada.Categoria • @NoticiaSeleccionada.Fecha
+                </span>
+                
+                <h1 style="font-size: 2.5rem; margin: 15px 0 20px 0; font-weight: 700; line-height: 1.2;">
+                    @NoticiaSeleccionada.Titulo
+                </h1>
+
+                <p style="color: #ffffff; font-size: 1.2rem; font-weight: 500; line-height: 1.5; margin-bottom: 25px; border-left: 4px solid #e50914; padding-left: 15px;">
+                    @NoticiaSeleccionada.Copete
+                </p>
+
+                <hr style="border: 0; border-top: 1px solid #333; margin-bottom: 25px;" />
+
+                <div style="color: #cfd2d6; font-size: 1.1rem; line-height: 1.7; text-align: justify;">
+                    @((MarkupString)NoticiaSeleccionada.TextoCompleto)
+                </div>
+            </div>
+
+        </article>
+    }
+    else
+    {
+        <div style="text-align: center; padding: 20px 0; color: #9ea1a6;">
+            <h3>Buscando la noticia...</h3>
+        </div>
+    }
+
+</div>
+
+<!-- 💻 🟢 ============================================================ -->
+<!-- 💻 🟢 C# (LÓGICA PARA BUSCAR Y CARGAR LA INFORMACIÓN COMPLETA)     -->
+<!-- 💻 🟢 ============================================================ -->
+@code {
+    [Parameter] public string urlNoticia { get; set; } = "";
+
+    private DetalleNota? NoticiaSeleccionada;
+
+    public class DetalleNota
+    {
+        public string Titulo { get; set; } = "";
+        public string Copete { get; set; } = "";
+        public string Imagen { get; set; } = "";
+        public string Categoria { get; set; } = "";
+        public string Fecha { get; set; } = "";
+        public string TextoCompleto { get; set; } = "";
+    }
+
+    private List<DetalleNota> BaseNoticias = new List<DetalleNota>
+    {
+        new DetalleNota { 
+            Titulo = "Marvel Studios prepara el terreno para Avengers: Secret Wars", 
+            Copete = "Nuevos reportes indican que la producción comenzará a finales de este año, prometiendo revolucionar el universo cinematográfico con un despliegue de héroes nunca antes visto.", 
+            Imagen = "imagenes/Estrenos/Avengers.jpg", 
+            Categoria = "Cine", 
+            Fecha = "Hoy",
+            TextoCompleto = "La expectativa por la próxima gran entrega de Marvel ha alcanzado niveles históricos. Fuentes cercanas a la producción han revelado que el guion principal está cerrado y que el equipo de preproducción ya se encuentra diseñando los escenarios digitales.<br/><br/>Se espera que esta cinta marque el regreso de múltiples variantes legendarias y actúe como un punto de reinicio masivo para toda la franquicia cinematográfica. Los directores han prometido batallas a una escala nunca antes vista en la pantalla grande."
+        },
+        new DetalleNota { 
+            Titulo = "El director de The Batman adelanta detalles oscuros de la secuela", 
+            Copete = "Se confirmó que el guion está completamente terminado y que la producción se enfocará en un caso policial aún más profundo y crudo en las calles de Gotham.", 
+            Imagen = "imagenes/Estrenos/Batman2.jpg", 
+            Categoria = "Producción", 
+            Fecha = "Ayer",
+            TextoCompleto = "La producción de la esperada continuación del Caballero de la Noche está lista para encender las cámaras. Matt Reeves confirmó en una reciente rueda de prensa que esta entrega explorará a fondo la psique de Bruce Wayne como el mejor detective del mundo.<br/><br/>El argumento se centrará en el colapso institucional de Gotham City y la llegada de un nuevo sindicato criminal que pondrá a prueba los límites morales de nuestro protagonista. Los fanáticos pueden esperar una atmósfera marcadamente noir y detectivesca."
+        },
+        new DetalleNota { 
+            Titulo = "Zelda live-action: El director promete fidelidad absoluta al juego", 
+            Copete = "En una reciente entrevista, el equipo de desarrollo visual aseguró que están trabajando codo a codo con los creadores originales para recrear el reino de Hyrule de forma perfecta.", 
+            Imagen = "imagenes/Estrenos/Zelda.jpg", 
+            Categoria = "Exclusivo", 
+            Fecha = "Hace 2 días",
+            TextoCompleto = "La adaptación cinematográfica de una de las sagas de videojuegos más queridas de la historia avanza a paso firme. El director del largometraje trajo tranquilidad a la comunidad al asegurar que se respetará al máximo la esencia de la trifuerza y el misticismo del reino.<br/><br/>Los talleres de utilería ya se encuentran forjando réplicas físicas a escala real de las armas emblemáticas, y los encargados de locaciones han seleccionado terrenos imponentes de Europa para dar vida a las praderas y mazmorras que marcaron la infancia de millones de jugadores."
+        }
+    };
+
+    protected override void OnParametersSet()
+    {
+        if (!string.IsNullOrEmpty(urlNoticia))
+        {
+            // Busca la noticia que coincida de forma exacta con la palabra clave de la URL
+            string claveUrl = urlNoticia.ToLower();
+            if (claveUrl.Contains("avengers")) NoticiaSeleccionada = BaseNoticias[0];
+            else if (claveUrl.Contains("batman")) NoticiaSeleccionada = BaseNoticias[1];
+            else if (claveUrl.Contains("zelda")) NoticiaSeleccionada = BaseNoticias[2];
+        }
+    }
+}

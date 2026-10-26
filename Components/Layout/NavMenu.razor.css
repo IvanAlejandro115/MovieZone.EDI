@@ -1,0 +1,79 @@
+.menu-lateral {
+    background-color: #1a1c20; /* El gris oscuro mate de Plex */
+    width: 250px;
+    min-height: 100vh;
+    padding: 20px 0; /* Quitamos padding lateral para que la barra activa llegue al borde */
+    display: flex;
+    flex-direction: column; /* Alinea los elementos uno debajo del otro */
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.logo {
+    color: #e50914; /* Rojo MovieZone */
+    margin-bottom: 25px;
+    padding: 0 20px;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+/* El truco: ::deep rompe el aislamiento para modificar las etiquetas NavLink directamente */
+.menu-lateral ::deep .opcion {
+    display: flex !important; /* Fuerza el diseño de fila vertical */
+    align-items: center;
+    color: #9ea1a6 !important; /* El mismo gris claro del MÁS */
+    text-decoration: none !important; /* Quita el subrayado azul por completo */
+    padding: 12px 20px;
+    position: relative;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    font-size: 0.95rem;
+}
+
+/* Controla el tamaño y separación de los iconos de Bootstrap */
+.menu-lateral ::deep .opcion i {
+    font-size: 1.2rem;
+    margin-right: 15px;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Efecto al pasar el mouse por encima */
+.menu-lateral ::deep .opcion:hover {
+    background-color: #24262b !important;
+    color: #e8e9ea !important;
+}
+
+/* ESTADO SELECCIONADO (Estilo Plex) */
+.menu-lateral ::deep .opcion.active {
+    background-color: #2d3037 !important; /* Fondo sutilmente más claro */
+    color: #ffffff !important; /* Texto blanco brillante */
+}
+
+/* La barra vertical de color en el extremo izquierdo */
+.menu-lateral ::deep .opcion.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: #e5a93b; /* Amarillo/Ámbar de Plex */
+}
+
+/* Estilo para el botón MÁS inferior */
+.seccion-mas {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    color: #72757a;
+    font-size: 0.8rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: auto; /* Empuja el botón MÁS hasta abajo del todo automáticamente */
+}
+
+.seccion-mas:hover {
+    color: #9ea1a6;
+}

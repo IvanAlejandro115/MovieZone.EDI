@@ -1,0 +1,139 @@
+@page "/ver/{urlPelicula}"
+@rendermode InteractiveServer 
+
+<!--  AQUÍ INICIA HTML: la ESTRUCTURA DE LA VISTA DE DETALLE    -->
+<div style="display: flex; flex-direction: column; width: 100%; padding: 40px; box-sizing: border-box; font-family: system-ui, sans-serif; color: #ffffff;">
+
+    <!-- Botón Volver -->
+    <NavLink href="estrenos" style="display: inline-flex; align-items: center; color: #9ea1a6; text-decoration: none; margin-bottom: 30px; gap: 8px; font-weight: 500;">
+        <i class="bi bi-arrow-left"></i> Volver a Estrenos
+    </NavLink>
+
+    @if (PeliculaSeleccionada != null)
+    {
+        <!-- Contenedor Principal (Flexbox Horizontal) -->
+        <div style="display: flex; gap: 40px; background-color: #1a1c20; padding: 30px; border-radius: 16px; border: 1px solid #333; box-shadow: 0 8px 25px rgba(0,0,0,0.5);">
+            
+            <!-- Póster Izquierdo -->
+            <div style="width: 300px; height: 450px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.4); flex-shrink: 0;">
+                <img src="@PeliculaSeleccionada.Imagen" alt="@PeliculaSeleccionada.Titulo" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+
+            <!-- Información Derecha -->
+            <div style="display: flex; flex-direction: column; justify-content: flex-start;">
+                <span style="background-color: #e50914; color: #ffffff; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; letter-spacing: 1px; align-self: flex-start; margin-bottom: 15px;">
+                    ESTRENO EXCLUSIVO
+                </span>
+                
+                <h1 style="font-size: 3rem; margin: 0 0 10px 0; font-weight: 700;">@PeliculaSeleccionada.Titulo</h1>
+                
+                <!-- Datos Rápidos -->
+                <div style="display: flex; gap: 20px; color: #9ea1a6; font-size: 0.95rem; margin-bottom: 25px; font-weight: 500;">
+                    <div><i class="bi bi-calendar-event"></i> <strong>Fecha exacta:</strong> @PeliculaSeleccionada.FechaExacta</div>
+                    <div><i class="bi bi-film"></i> <strong>Categoría:</strong> @PeliculaSeleccionada.Etiqueta</div>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid #333; width: 100%; margin-bottom: 25px;" />
+
+                <h2 style="font-size: 1.3rem; color: #e5a93b; margin-bottom: 10px; font-weight: 600;">Sinopsis Completa</h2>
+                <p style="color: #e8e9ea; font-size: 1.1rem; line-height: 1.6; margin: 0; max-width: 700px;">
+                    @PeliculaSeleccionada.DescripcionCompleta
+                </p>
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div style="text-align: center; padding: 20px 0; color: #9ea1a6;">
+            <h3>No se encontró la información de la película.</h3>
+        </div>
+    }
+
+</div>   
+
+
+
+@code {
+    [Parameter] public string urlPelicula { get; set; } = "";
+
+
+    private DetallePelicula? PeliculaSeleccionada;
+
+    public class DetallePelicula
+    {
+        public string Titulo { get; set; } = "";
+        public string Imagen { get; set; } = "";
+        public string Etiqueta { get; set; } = "";
+        public string FechaExacta { get; set; } = "";
+        public string DescripcionCompleta { get; set; } = "";
+    }
+
+    private List<DetallePelicula> InfoPeliculas = new List<DetallePelicula>
+    {
+        new DetallePelicula { 
+            Titulo = "Avengers", 
+            Imagen = "imagenes/Estrenos/Avengers.jpg", 
+            Etiqueta = "Acción / Ciencia Ficción",
+            FechaExacta = "30 de Abril de 2027",
+            DescripcionCompleta = "Los héroes más poderosos de la Tierra se reúnen una vez más para enfrentar una nueva amenaza global. En esta entrega masiva, los multiversos colisionan obligando a todas las facciones conocidas de Avengers a unirse en una última resistencia épica para salvar los cimientos de la realidad misma." 
+        },
+        new DetallePelicula { 
+            Titulo = "Batman 2", 
+            Imagen = "imagenes/Estrenos/Batman2.jpg", 
+            Etiqueta = "Suspenso / Policial",
+            FechaExacta = "2 de Octubre de 2026",
+            DescripcionCompleta = "El caballero de la noche regresa a las oscuras calles de Gotham para un nuevo e intrigante capítulo. Bruce Wayne deberá adentrarse en los rincones más profundos y corruptos de la mafia de la ciudad mientras un nuevo y misterioso sindicato criminal amenaza con exponer sus mayores secretos." 
+        },
+        new DetallePelicula { 
+            Titulo = "Godzilla y Kong", 
+            Imagen = "imagenes/Estrenos/Godzilla.jpg", 
+            Etiqueta = "Acción / Monstruos",
+            FechaExacta = "26 de Marzo de 2027",
+            DescripcionCompleta = "Una batalla épica e histórica que sacudirá los cimientos del planeta entero. Tras los eventos del surgimiento de los Titanes, Godzilla y Kong se ven obligados a balancear su rivalidad territorial cuando una colosal amenaza despierta en lo profundo de la Tierra Hueca." 
+        },
+        new DetallePelicula { 
+            Titulo = "Legend of Zelda", 
+            Imagen = "imagenes/Estrenos/Zelda.jpg", 
+            Etiqueta = "Aventura / Fantasía",
+            FechaExacta = "18 de Diciembre de 2027",
+            DescripcionCompleta = "La esperada adaptación cinematográfica de acción real basada en el legendario reino de Hyrule llega a la pantalla grande. Seguiremos los pasos de un joven guerrero elegido por el destino que deberá cruzar tierras peligrosas para rescatar a la princesa." 
+        },
+        new DetallePelicula { 
+            Titulo = "Sonic 4", 
+            Imagen = "imagenes/Estrenos/Sonic4.jpg", 
+            Etiqueta = "Animación / Familiar",
+            FechaExacta = "12 de Junio de 2026",
+            DescripcionCompleta = "El erizo azul regresa a toda velocidad junto a sus amigos para enfrentar una nueva y divertida aventura. En esta ocasión, el Dr. Eggman desata un antiguo artefacto tecnológico que altera la gravedad, obligando al equipo a viajar por zonas nunca antes vistas." 
+        },
+        new DetallePelicula { 
+            Titulo = "Spider-Man", 
+            Imagen = "imagenes/Estrenos/Spiderman.jpg", 
+            Etiqueta = "Acción / Superhéroes",
+            FechaExacta = "5 de Noviembre de 2026",
+            DescripcionCompleta = "Peter Parker se enfrenta a nuevos desafíos arácnidos en una espectacular entrega llena de acción. Con la aparición de nuevos adversarios que manipulan ilusiones cuánticas, Spider-Man deberá aprender a confiar ciegamente en sus instintos." 
+        },
+        new DetallePelicula { 
+            Titulo = "Cómo entrenar a tu dragón 3", 
+            Imagen = "imagenes/Estrenos/Dragon2.jpg", 
+            Etiqueta = "Animación / Aventura",
+            FechaExacta = "22 de Mayo de 2026",
+            DescripcionCompleta = "Hipo y Chimuelo descubren un nuevo y misterioso mundo oculto lleno de dragones legendarios. A medida que la paz de su aldea se ve amenazada por un implacable cazador nocturno, ambos deberán tomar decisiones cruciales que cambiarán sus vidas." 
+        }
+    };
+
+    protected override void OnParametersSet()
+    {
+        // Busca en la lista cuál coincide dinámicamente con la palabra de la URL
+        if (!string.IsNullOrEmpty(urlPelicula))
+        {
+            if (urlPelicula.Contains("avengers")) PeliculaSeleccionada = InfoPeliculas[0];
+            else if (urlPelicula.Contains("batman")) PeliculaSeleccionada = InfoPeliculas[1];
+            else if (urlPelicula.Contains("godzilla")) PeliculaSeleccionada = InfoPeliculas[2];
+            else if (urlPelicula.Contains("zelda")) PeliculaSeleccionada = InfoPeliculas[3];
+            else if (urlPelicula.Contains("sonic")) PeliculaSeleccionada = InfoPeliculas[4];
+            else if (urlPelicula.Contains("spider")) PeliculaSeleccionada = InfoPeliculas[5];
+            else if (urlPelicula.Contains("dragon")) PeliculaSeleccionada = InfoPeliculas[6];
+        }
+    }
+}

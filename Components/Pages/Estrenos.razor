@@ -1,0 +1,115 @@
+@page "/estrenos"
+@rendermode InteractiveServer
+
+
+
+<!-- AQUÍ INICIA: HTML (ESTRUCTURA VISUAL DE LA PÁGINA ESTRENOS) -->
+<div style="display: flex; flex-direction: column; width: 100%; padding: 20px; box-sizing: border-box; font-family: system-ui, sans-serif;">
+
+    <!-- Encabezado de la Sección -->
+    <header style="margin-bottom: 30px;">
+        <h2 style="color: #ffffff; font-size: 2.5rem; font-weight: 700; margin: 0; font-family: system-ui, sans-serif;">Próximos Estrenos</h2>
+        <p style="color: #9ea1a6; font-size: 1rem; margin-top: 5px;">Las novedades más esperadas que están por llegar a MovieZone.</p>
+    </header>
+
+    <!-- Sección de Catálogo de Lanzamientos -->
+    <main>
+        <!-- AQUÍ SE USA: CSS (GRILLA INTELIGENTE DE 4 COLUMNAS PARA ESTRENOS) -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; width: 100%;">
+
+    <!-- AQUÍ SE USA: C# (BUCLE RAZOR PARA CARGAR CADA ESTRENO)    -->
+
+        @foreach (var peli in ListaEstrenos)
+            {
+                <NavLink href="@peli.Url" style="text-decoration: none; cursor: pointer; background-color: #1a1c20; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding-bottom: 15px; border: 1px solid #333; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+                    
+                    <span style="position: absolute; top: 12px; left: 12px; background-color: #e50914; color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; letter-spacing: 0.5px; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                        @peli.Etiqueta
+                    </span>
+
+                    <img src="@peli.Imagen" alt="@peli.Titulo" style="width: 100%; height: 260px; object-fit: cover;" />
+                    
+                    <div style="padding: 0 12px; text-align: center; width: 100%; box-sizing: border-box;">
+                        <h3 style="color: #ffffff; font-size: 1.1rem; margin-top: 15px; margin-bottom: 5px; font-family: system-ui, sans-serif; font-weight: 500;">@peli.Titulo</h3>
+                        <p style="color: #72757a; font-size: 0.8rem; margin: 0; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">@peli.Descripcion</p>
+                    </div>
+                </NavLink>
+            }
+
+        </div>
+    </main>
+
+</div>
+
+<!-- AQUÍ TERMINA: HTML Y CSS DE LA VISTA DE ESTRENOS        -->
+
+
+<!--  AQUÍ INICIA: C# / C-SHARP (DATOS DINÁMICOS DE LOS ESTRENOS)  -->
+
+@code {
+    // CLASE C#: Estructura interna para definir un estreno
+    public class Estreno
+    {
+        public string Titulo { get; set; } = "";
+        public string Imagen { get; set; } = "";
+        public string Descripcion { get; set; } = "";
+        public string Etiqueta { get; set; } = "NUEVO";
+        public string Url { get; set; } = "";
+    }
+
+    //  Con las rutas de la nueva carpeta "Estrenos" dentro de "imagenes"
+    private List<Estreno> ListaEstrenos = new List<Estreno>
+    {
+        new Estreno { 
+            Titulo = "Avengers", 
+            Imagen = "imagenes/Estrenos/Avengers.jpg", 
+            Descripcion = "Los héroes más poderosos de la Tierra se reúnen una vez más para enfrentar una nueva amenaza global.", 
+            Etiqueta = "2027", 
+            Url = "ver/avengers-estreno" 
+        },
+        new Estreno { 
+            Titulo = "Batman 2", 
+            Imagen = "imagenes/Estrenos/Batman2.jpg", 
+            Descripcion = "El caballero de la noche regresa a las oscuras calles de Gotham para un nuevo e intrigante capítulo.", 
+            Etiqueta = "2027", 
+            Url = "ver/batman2" 
+        },
+        new Estreno { 
+            Titulo = "Godzilla y Kong", 
+            Imagen = "imagenes/Estrenos/Godzilla.jpg", 
+            Descripcion = "Una batalla épica e histórica que sacudirá los cimientos del planeta entero.", 
+            Etiqueta = "2027", 
+            Url = "ver/godzilla" 
+        },
+        new Estreno { 
+            Titulo = "Legend of Zelda", 
+            Imagen = "imagenes/Estrenos/Zelda.jpg", 
+            Descripcion = "La esperada adaptación cinematográfica del legendario reino de Hyrule llega a la pantalla grande.", 
+            Etiqueta = "2027", 
+            Url = "ver/zelda" 
+        },
+        new Estreno { 
+            Titulo = "Sonic 4", 
+            Imagen = "imagenes/Estrenos/Sonic4.jpg", 
+            Descripcion = "El erizo azul regresa a toda velocidad junto a sus amigos para enfrentar una nueva y divertida aventura.", 
+            Etiqueta = "2027", 
+            Url = "ver/sonic4" 
+        },
+        new Estreno { 
+            Titulo = "Spider-Man", 
+            Imagen = "imagenes/Estrenos/Spiderman.jpg", 
+            Descripcion = "Peter Parker se enfrenta a nuevos desafíos arácnidos en una espectacular entrega llena de acción.", 
+            Etiqueta = "2027", 
+            Url = "ver/spiderman-estreno" 
+        },
+        new Estreno { 
+            Titulo = "Cómo entrenar a tu dragón 3", 
+            Imagen = "imagenes/Estrenos/Dragon2.jpg", 
+            Descripcion = "Hipo y Chimuelo descubren un nuevo y misterioso mundo oculto lleno de dragones legendarios.", 
+            Etiqueta = "2027", 
+            Url = "ver/dragon-estreno" 
+        }
+   
+    };
+}
+
