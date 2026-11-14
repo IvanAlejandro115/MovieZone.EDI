@@ -1,48 +1,46 @@
 ﻿@page "/"
-@rendermode InteractiveServer  //// habilitaste un canal de comunicación bidireccional en tiempo real 
+@rendermode InteractiveServer
+@inject NavigationManager Navigation /*    conector      */
 
 
-<!-- AQUÍ INICIA: HTML (ESTRUCTURA VISUAL DE LA PÁGINA)        -->
 <div style="display: flex; flex-direction: column; width: 100%; padding: 20px; box-sizing: border-box;">
 
-    <!-- AQUÍ SE USA CSS (ESTILO INLINE PARA EL ENCABEZADO) -->
-    <header style="display: flex; justify-content: flex-start; margin-bottom: 30px; width: 100%;">
-        
-        <!-- AQUÍ SE USA HTML (ETIQUETA INPUT PARA LA BARRA) -->
-
-        <!-- AQUÍ INTERACTÚA: BLAZOR CONECTA EL TECLADO CON C# -->
+    <!-- ENCABEZADO CON BARRA DE BÚSQUEDA Y BOTÓN PARA RESTABLECER -->
+    <header style="display: flex; align-items: center; gap: 10px; margin-bottom: 30px; width: 100%;">
         <input type="text" 
-               placeholder="Buscar película..." 
-               @bind="textoBusqueda" 
-               @bind:event="oninput"
-               style="width: 300px; padding: 10px 15px; border-radius: 4px; border: 1px solid #333; font-size: 0.95rem; background-color: #ffffff; color: #000000;" />
+               placeholder="Buscar película y presionar Enter..." 
+               maxlength="30"
+               @bind-value="textoBusqueda" 
+               @bind-value:event="oninput" 
+               @onkeydown="ManejarKeyDown"
+               style="width: 320px; padding: 10px 15px; border-radius: 6px; border: 1px solid #333; font-size: 0.95rem; background-color: #ffffff; color: #000000;" />
+
+        <!-- BOTÓN PARA LIMPIAR Y MOSTRAR TODAS LAS PELÍCULAS DE NUEVO -->
+        <button @onclick="LimpiarBusqueda" 
+                style="background-color: #e5a93b; color: #121212; border: none; padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
+            <i class="bi bi-arrow-counterclockwise"></i> Borrar
+
+        </button>
     </header>
 
-
-    <!-- HTML (ETIQUETAS PARA EL CONTENIDO PRINCIPAL) -->
+    <!-- CONTENIDO PRINCIPAL -->
     <main>
-        <!-- CSS (COLOR BLANCO Y FUENTE PARA EL TÍTULO) -->
+       
         <h2 style="color: #ffffff; font-size: 2rem; margin-bottom: 25px; font-weight: 600; font-family: system-ui, sans-serif;">Peliculas disponibles</h2>
 
-        <!-- CSS (GRILLA INTELIGENTE DE 4 COLUMNAS) -->
+        <!-- GRILLA DE PELÍCULAS -->
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; width: 100%;">
 
-
-
-
-
-            <!-- C# (BUCLE RAZOR PARA CARGAR CADA PELÍCULA) -->
+         
             @foreach (var peli in PeliculasFiltradas)
             {
-                //  HTML (ETIQUETA NAVLINK QUE ACTÚA COMO BOTÓN CLICKABLE) -->
-                //  CSS (ESTILO OSCURO, BORDES REDONDEADOS Y SOMBRA PLEX) -->
+             
                 <NavLink href="@peli.Url" style="text-decoration: none; cursor: pointer; background-color: #1a1c20; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding-bottom: 15px; border: 1px solid #333; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
-                    
-                   
+             
                     <img src="@peli.Imagen" alt="@peli.Titulo" style="width: 100%; height: 260px; object-fit: cover;" />
-                    
-                    <!--// ETIQUETA H3 PARA EL TEXTO LEYENDO LA VARIABLE DE C# -->
+                 
                     <h3 style="color: #ffffff; font-size: 1.1rem; margin-top: 15px; font-family: system-ui, sans-serif; font-weight: 500; text-align: center;">@peli.Titulo</h3>
+             
                 </NavLink>
             }
 
@@ -51,15 +49,13 @@
 
 </div>
 
-
-
-<!--// C# (EL CEREBRO LÓGICO DE LA PÁGINA)    -->
-
+<!-- C# (LÓGICA DE LA PÁGINA) -->
 @code {
-    // VARIABLE C#: Guarda las letras que vas escribiendo en el buscador
+  
     private string textoBusqueda = "";
+    private string busquedaAplicada = "";
 
-    // El molde con las propiedades que tiene cada película
+    
     public class Pelicula
     {
         public string Titulo { get; set; } = "";
@@ -67,7 +63,7 @@
         public string Url { get; set; } = "";
     }
 
-    // la base de datos con 16 películas actuales
+    // Lista con las 16 películas actuales
     private List<Pelicula> MisPeliculas = new List<Pelicula>
     {
         new Pelicula { Titulo = "Batman", Imagen = "imagenes/batman.jpg", Url = "ver/batman" },
@@ -88,10 +84,50 @@
         new Pelicula { Titulo = "Demon Slayer", Imagen = "imagenes/demosslayer.jpg", Url = "ver/demon-slayer" }
     };
 
-    // FILTRO: compara el buscador con los títulos de la lista
+    // Colección filtrada basada únicamente en la búsqueda confirmada
     private IEnumerable<Pelicula> PeliculasFiltradas =>
-        string.IsNullOrWhiteSpace(textoBusqueda)
+        string.IsNullOrWhiteSpace(busquedaAplicada)
             ? MisPeliculas
-            : MisPeliculas.Where(p => p.Titulo.Contains(textoBusqueda, StringComparison.OrdinalIgnoreCase));
-}
+            : MisPeliculas.Where(p => p.Titulo.Contains(busquedaAplicada, StringComparison.OrdinalIgnoreCase));
 
+    // Captura la tecla presionada
+    private void ManejarKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            EjecutarBusqueda();
+        }
+    }
+
+    private void EjecutarBusqueda()
+    {
+        string consulta = textoBusqueda.Trim();
+
+        // Si se presiona Enter con el buscador vacío, restaura todas las películas
+        if (string.IsNullOrWhiteSpace(consulta))
+        {
+            busquedaAplicada = "";
+            return;
+        }
+
+        // Verifica si existe al menos una coincidencia
+        bool existeCoincidencia = MisPeliculas.Any(p => p.Titulo.Contains(consulta, StringComparison.OrdinalIgnoreCase));
+
+        if (!existeCoincidencia)
+        {
+            string mensaje = $"No se encontraron películas que coincidan con '{consulta}'.";
+            Navigation.NavigateTo($"/cartel-error/{Uri.EscapeDataString(mensaje)}");
+        }
+        else
+        {
+            busquedaAplicada = consulta;
+        }
+    }
+
+    // Restablece el buscador y vuelve a cargar las 16 películas
+    private void LimpiarBusqueda()
+    {
+        textoBusqueda = "";
+        busquedaAplicada = "";
+    }
+}

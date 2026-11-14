@@ -3,10 +3,9 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.EntityFrameworkCore
 @inject MovieZone.AppDbContext DbContext
+@inject NavigationManager Navigation
 
-
-
-<!-- 🟢 HTML: ESTRUCTURA CON BÚSQUEDA, PAGINACIÓN Y CRUD COMPLETO -->
+<!-- HTML: ESTRUCTURA CON BÚSQUEDA, PAGINACIÓN Y CRUD COMPLETO -->
 <div style="display: flex; flex-direction: column; width: 100%; padding: 20px; box-sizing: border-box; font-family: system-ui, sans-serif; color: #ffffff;">
 
     <!-- Encabezado -->
@@ -15,14 +14,20 @@
         <p style="color: #9ea1a6; font-size: 1rem; margin-top: 5px;">Administración avanzada: Alta, Baja, Modificación, Búsqueda y Paginación en SQLite.</p>
     </header>
 
-    <!-- 🔍 REQUERIMIENTO UNIDAD 3: BARRA DE BÚSQUEDA EN TIEMPO REAL -->
+    <!-- BARRA DE BÚSQUEDA EN TIEMPO REAL CON LÍMITE DE 30 CARACTERES -->
     <div style="margin-bottom: 25px; width: 100%; max-width: 400px; display: flex; gap: 10px;">
-        <input type="text" @bind-value="textoBusqueda" @bind-value:event="oninput" @onkeyup="BuscarPeliculas" placeholder="🔍 Buscar película en la colección..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; background-color: #1a1c20; color: #ffffff; font-size: 0.95rem;" />
+        <input type="text" 
+               maxlength="30"
+               @bind-value="textoBusqueda" 
+               @bind-value:event="oninput" 
+               @onkeyup="BuscarPeliculas" 
+               placeholder="🔍 Buscar película en la colección..." 
+               style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; background-color: #1a1c20; color: #ffffff; font-size: 0.95rem;" />
     </div>
 
     <div style="display: flex; gap: 40px; width: 100%;">
 
-        <!-- COLUMNA IZQUIERDA: Formulario Inteligente (Sirve para Altas y Modificaciones) -->
+        <!-- COLUMNA IZQUIERDA: Formulario Inteligente (Altas y Modificaciones) -->
         <div style="width: 350px; background-color: #1a1c20; padding: 25px; border-radius: 12px; border: 1px solid #333; height: fit-content; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
             <h3 style="font-size: 1.2rem; color: #e5a93b; margin-top: 0; margin-bottom: 20px; font-weight: 600;">
                 @(idSeleccionadoParaEditar == null ? "Registrar Contenido" : "Modificar Contenido")
@@ -33,7 +38,10 @@
 
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; font-size: 0.9rem; color: #cfd2d6; margin-bottom: 5px; font-weight: 500;">Título de la Película:</label>
-                    <InputText @bind-Value="nuevaPeli.Titulo" placeholder="Ej: Batman Inicia" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background-color: #2d3037; color: #ffffff; box-sizing: border-box;" />
+                    <InputText @bind-Value="nuevaPeli.Titulo" 
+                               maxlength="30"
+                               placeholder="Ej: Batman Inicia" 
+                               style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background-color: #2d3037; color: #ffffff; box-sizing: border-box;" />
                     <ValidationMessage For="() => nuevaPeli.Titulo" style="color: #e50914; font-size: 0.8rem; margin-top: 5px; display: block;" />
                 </div>
 
@@ -81,14 +89,15 @@
                                     <span style="color: #e5a93b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px;">@peli.Etiqueta</span>
                                 </div>
 
-                                <!-- 🛠️ ACCIONES CRUD: MODIFICAR (UPDATE) Y ELIMINAR (DELETE) -->
+                                <!-- ACCIONES CRUD: MODIFICAR Y ELIMINAR -->
+            
                                 <div style="display: flex; gap: 8px; width: 90%; margin: 0 auto 5px auto;">
-                                    <!-- Botón Editar (Carga el formulario) -->
+                     
                                     <button @onclick="() => CargarPeliculaParaEditar(peli)" style="flex-grow: 1; background-color: #0d6efd; color: #ffffff; border: none; padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; justify-content: center;">
                                         <i class="bi bi-pencil-fill"></i> Editar
                                     </button>
                                     
-                                    <!-- Botón Eliminar -->
+           
                                     <button @onclick="() => EliminarPelicula(peli.Id)" style="background-color: #dc3545; color: #ffffff; border: none; padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 40px;">
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
@@ -99,7 +108,7 @@
                 </div>
             </div>
 
-            <!-- 📄 REQUERIMIENTO UNIDAD 3: BOTONES DE PAGINACIÓN -->
+            <!-- BOTONES DE PAGINACIÓN -->
             <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 30px; background-color: #1a1c20; padding: 10px; border-radius: 8px; border: 1px solid #333; width: fit-content; margin-left: auto; margin-right: auto;">
                 <button @onclick="PaginaAnterior" disabled="@(paginaActual == 1)" style="background-color: #333; color: #ffffff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; opacity: @(paginaActual == 1 ? "0.4" : "1")">
                     ⏮️ Anterior
@@ -113,7 +122,6 @@
 
     </div>
 </div>
-
 
 
 
@@ -132,7 +140,7 @@
     public class FormularioPeli
     {
         [Required(ErrorMessage = "El título es obligatorio para guardar la película")]
-        [StringLength(60, MinimumLength = 2, ErrorMessage = "El título debe tener entre 2 y 60 letras")]
+        [StringLength(30, MinimumLength = 2, ErrorMessage = "El título debe tener entre 2 y 30 letras")]
         public string Titulo { get; set; } = "";
 
         [Required(ErrorMessage = "Debes seleccionar una categoría cinematográfica")]
@@ -180,14 +188,35 @@
     private async Task GuardarPelicula()
     {
         string tituloLimpio = nuevaPeli.Titulo.ToLower().Trim();
-        string rutaImagenAsignada = "imagenes/avatar.jpg";
+        string? rutaImagenAsignada = null;
 
+        // Evaluación con el catálogo completo de las 16 películas disponibles
         if (tituloLimpio.Contains("batman")) rutaImagenAsignada = "imagenes/batman.jpg";
         else if (tituloLimpio.Contains("dune") || tituloLimpio.Contains("duna")) rutaImagenAsignada = "imagenes/duna.jpg";
+        else if (tituloLimpio.Contains("avatar")) rutaImagenAsignada = "imagenes/avatar.jpg";
         else if (tituloLimpio.Contains("john wick")) rutaImagenAsignada = "imagenes/johnwick.jpg";
-        else if (tituloLimpio.Contains("mario")) rutaImagenAsignada = "imagenes/mario.jpg";
+        else if (tituloLimpio.Contains("kraven")) rutaImagenAsignada = "imagenes/kraven.jpg";
+        else if (tituloLimpio.Contains("aladdín") || tituloLimpio.Contains("aladdin")) rutaImagenAsignada = "imagenes/aladin.jpg";
+        else if (tituloLimpio.Contains("aang") || tituloLimpio.Contains("leyenda de aang")) rutaImagenAsignada = "imagenes/aang.jpg";
+        else if (tituloLimpio.Contains("avengers") || tituloLimpio.Contains("endgame")) rutaImagenAsignada = "imagenes/avengers.jpg";
         else if (tituloLimpio.Contains("wonka")) rutaImagenAsignada = "imagenes/Wonka.jpg";
+        else if (tituloLimpio.Contains("crepúsculo") || tituloLimpio.Contains("crepusculo") || tituloLimpio.Contains("amanecer")) rutaImagenAsignada = "imagenes/amanecer.jpg";
+        else if (tituloLimpio.Contains("dragón") || tituloLimpio.Contains("dragon")) rutaImagenAsignada = "imagenes/dragón.jpg";
+        else if (tituloLimpio.Contains("conjuro")) rutaImagenAsignada = "imagenes/conjuro.jpg";
+        else if (tituloLimpio.Contains("mario")) rutaImagenAsignada = "imagenes/mario.jpg";
+        else if (tituloLimpio.Contains("madagascar")) rutaImagenAsignada = "imagenes/madagascar.jpg";
+        else if (tituloLimpio.Contains("maléfica") || tituloLimpio.Contains("malefica")) rutaImagenAsignada = "imagenes/malefica.jpg";
+        else if (tituloLimpio.Contains("demon slayer") || tituloLimpio.Contains("demon")) rutaImagenAsignada = "imagenes/demosslayer.jpg";
 
+        // SI NO COINCIDE CON NINGUNA PELÍCULA DEL CATÁLOGO:
+        if (rutaImagenAsignada == null)
+        {
+            string mensaje = $"El título '{nuevaPeli.Titulo}' no coincide con ninguna de las películas disponibles en el catálogo oficial.";
+            Navigation.NavigateTo($"/cartel-error/{Uri.EscapeDataString(mensaje)}");
+            return; // Cancela el guardado y muestra el cartel de error
+        }
+
+        // SI COINCIDE: Procede al guardado/edición en SQLite
         if (idSeleccionadoParaEditar == null)
         {
             var nuevoItem = new MovieZone.PeliculaColeccion { Titulo = nuevaPeli.Titulo, Etiqueta = nuevaPeli.Etiqueta, Imagen = rutaImagenAsignada };

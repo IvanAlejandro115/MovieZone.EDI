@@ -1,37 +1,41 @@
-﻿<nav class="menu-lateral">
+﻿<nav class="d-flex flex-column p-3 bg-dark text-white" style="height: 100vh; width: 250px;">
 
-    <h2 class="logo">🎬 MovieZone</h2>
+    <!-- Logo de la aplicación -->
+    <h2 class="fs-4 fw-bold text-warning mb-4 px-2">🎬 MovieZone</h2>
 
-       <NavLink class="opcion" href="inicio">
-        <i class="bi bi-house-door-fill"></i>
-        <span>Inicio</span>
-    </NavLink>
+    <!-- Contenedor de opciones con utilidades de Bootstrap -->
+    <div class="nav flex-column nav-pills gap-2">
 
-    <NavLink class="opcion" href="" Match="NavLinkMatch.All">
-        <i class="bi bi-film"></i>
-        <span>Películas</span>
-    </NavLink>
+        <NavLink class="nav-link text-white d-flex align-items-center gap-3 py-2 px-3 rounded" href="inicio">
+            <i class="bi bi-house-door-fill fs-5"></i>
+            <span>Inicio</span>
+        </NavLink>
 
-    
-    <NavLink class="opcion" href="estrenos">
-        <i class="bi bi-lightning-charge-fill"></i>
-        <span>Estrenos</span>
-    </NavLink>
+        <NavLink class="nav-link text-white d-flex align-items-center gap-3 py-2 px-3 rounded" href="" Match="NavLinkMatch.All">
+            <i class="bi bi-film fs-5"></i>
+            <span>Películas</span>
+        </NavLink>
 
-    <NavLink class="opcion" href="noticias">
-        <i class="bi bi-newspaper"></i>
-        <span>Noticias</span>
-    </NavLink>
+        <NavLink class="nav-link text-white d-flex align-items-center gap-3 py-2 px-3 rounded" href="estrenos">
+            <i class="bi bi-lightning-charge-fill fs-5"></i>
+            <span>Estrenos</span>
+        </NavLink>
 
-    <NavLink class="opcion" href="mi-coleccion">
-        <i class="bi bi-folder-symlink-fill"></i>
-        <span>Mi Colección</span>
-    </NavLink>
+        <NavLink class="nav-link text-white d-flex align-items-center gap-3 py-2 px-3 rounded" href="noticias">
+            <i class="bi bi-newspaper fs-5"></i>
+            <span>Noticias</span>
+        </NavLink>
+
+        <NavLink class="nav-link text-white d-flex align-items-center gap-3 py-2 px-3 rounded" href="mi-coleccion">
+            <i class="bi bi-folder-symlink-fill fs-5"></i>
+            <span>Colección</span>
+        </NavLink>
 
 
-    <div class="seccion-mas">
-        <span>MÁS</span>
-        <i class="bi bi-chevron-right"></i>
+
+
     </div>
 
 </nav>
+
+

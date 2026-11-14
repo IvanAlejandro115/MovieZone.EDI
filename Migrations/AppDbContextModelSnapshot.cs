@@ -16,10 +16,56 @@ namespace MovieZone.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
 
+            modelBuilder.Entity("MovieZone.Categoria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categorias");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Nombre = "Acción / DC Comics"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Nombre = "Aventura / Fantasía"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Nombre = "Terror / Paranormal"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Nombre = "Animación / Videojuegos"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Nombre = "Acción / Suspenso"
+                        });
+                });
+
             modelBuilder.Entity("MovieZone.PeliculaColeccion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CategoriaId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Etiqueta")
@@ -37,7 +83,23 @@ namespace MovieZone.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoriaId");
+
                     b.ToTable("PeliculasColeccion");
+                });
+
+            modelBuilder.Entity("MovieZone.PeliculaColeccion", b =>
+                {
+                    b.HasOne("MovieZone.Categoria", "Categoria")
+                        .WithMany("Peliculas")
+                        .HasForeignKey("CategoriaId");
+
+                    b.Navigation("Categoria");
+                });
+
+            modelBuilder.Entity("MovieZone.Categoria", b =>
+                {
+                    b.Navigation("Peliculas");
                 });
 #pragma warning restore 612, 618
         }
