@@ -1,7 +1,7 @@
 ﻿@page "/"
 @rendermode InteractiveServer
-@inject NavigationManager Navigation /*    conector      */
-
+@inject NavigationManager Navigation /*    conector para hacer el enrrutamiento y la llamada     */
+@using MovieZone.Components.Pages
 
 <div style="display: flex; flex-direction: column; width: 100%; padding: 20px; box-sizing: border-box;">
 
@@ -31,16 +31,12 @@
         <!-- GRILLA DE PELÍCULAS -->
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; width: 100%;">
 
-         
             @foreach (var peli in PeliculasFiltradas)
             {
-             
-                <NavLink href="@peli.Url" style="text-decoration: none; cursor: pointer; background-color: #1a1c20; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding-bottom: 15px; border: 1px solid #333; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
-             
-                    <img src="@peli.Imagen" alt="@peli.Titulo" style="width: 100%; height: 260px; object-fit: cover;" />
-                 
-                    <h3 style="color: #ffffff; font-size: 1.1rem; margin-top: 15px; font-family: system-ui, sans-serif; font-weight: 500; text-align: center;">@peli.Titulo</h3>
-             
+                <NavLink href="@peli.Url" style="text-decoration: none; cursor: pointer;">
+                    <TarjetaPelicula Titulo="@peli.Titulo" 
+                                     Imagen="@peli.Imagen" 
+                                     AlturaImagen="260px" />
                 </NavLink>
             }
 
@@ -117,6 +113,7 @@
         {
             string mensaje = $"No se encontraron películas que coincidan con '{consulta}'.";
             Navigation.NavigateTo($"/cartel-error/{Uri.EscapeDataString(mensaje)}");
+            // Enrrutamiento con el cartel de error y mensaje dinamico.
         }
         else
         {

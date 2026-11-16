@@ -1,0 +1,40 @@
+<div style="background-color: #1a1c20; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding-bottom: 15px; border: 1px solid #333; box-shadow: 0 4px 6px rgba(0,0,0,0.3); height: 100%; justify-content: space-between;">
+    
+    <!-- Imagen dinámica recibida por parámetro  -->
+    <img src="@Imagen" alt="@Titulo" onerror="this.src='imagenes/default.jpg'" style="width: 100%; height: @AlturaImagen; object-fit: cover; background-color: #2d3037;" />
+    
+    <div style="padding: 10px; text-align: center; width: 100%; box-sizing: border-box;">
+        <!-- Título dinámico recibido por parámetro -->
+        <h3 style="color: #ffffff; font-size: 1.1rem; margin: 5px 0; font-family: system-ui, sans-serif; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            @Titulo
+        </h3>
+
+        <!-- Etiqueta / Categoría opcional -->
+        @if (!string.IsNullOrWhiteSpace(Etiqueta)) // Muestra la etiqueta solo si se proporciona un valor
+        {
+            <span style="color: #e5a93b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 8px;">
+                @Etiqueta
+            </span>
+        }
+
+        <!-- Proyección de contenido hijo (botones Editar/Eliminar en MiColeccion) -->
+        @ChildContent 
+    </div>
+</div>
+
+@code {  // Parámetros que permiten personalizar la tarjeta de película desde el componente padre
+    [Parameter, EditorRequired]
+    public string Titulo { get; set; } = "";
+
+    [Parameter, EditorRequired]
+    public string Imagen { get; set; } = "";
+
+    [Parameter]
+    public string? Etiqueta { get; set; }
+
+    [Parameter]
+    public string AlturaImagen { get; set; } = "220px";
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

@@ -1,7 +1,7 @@
 @page "/cartel-error"
 @page "/cartel-error/{MensajeError}"
 @rendermode InteractiveServer
-@inject IJSRuntime JS
+@inject IJSRuntime JS // inyección de IJSRuntime para ejecutar comandos de JavaScript desde blazor*/
 
 <div style="display: flex; justify-content: center; align-items: center; min-height: 80vh; width: 100%; padding: 20px; box-sizing: border-box; font-family: system-ui, sans-serif;">
     
@@ -32,13 +32,14 @@
 
 </div>
 
+
 @code {
     [Parameter]
     public string? MensajeError { get; set; }
 
     private async Task VolverPaginaAnterior()
     {
-        // Ejecuta el comando de JavaScript para ir a la página inmediatamente anterior en el historial del navegador
+        // Ejecuta el comando de JavaScript para ir a la página anterior en el historial del navegador
         await JS.InvokeVoidAsync("history.back");
     }
 }

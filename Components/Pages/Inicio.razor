@@ -1,7 +1,7 @@
 @page "/inicio"
 @rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
-@inject MovieZone.AppDbContext DbContext /* conecta la pag con micoleccion */
+@inject MovieZone.AppDbContext DbContext /* conecta la pag con micoleccion por medio de la base de datos SQLite */ 
 
 
 
@@ -23,7 +23,7 @@
 
     <!-- SECCIÓN SECUNDARIA: MI COLECCIÓN / CONTINUAR VIENDO (DINÁMICA DESDE SQLITE) -->
     <main>
-        <h2 style="color: #ffffff; font-size: 1.5rem; margin-bottom: 20px; font-weight: 600;">Mi Colección / Continuar viendo</h2>
+        <h2 style="color: #ffffff; font-size: 1.5rem; margin-bottom: 20px; font-weight: 600;">Continuar viendo</h2>
         
         @if (peliculasGuardadas == null)
         {
@@ -37,14 +37,14 @@
         }
         else
         {
-            <!-- GRILLA DE 4 COLUMNAS CON LAS PELÍCULAS DE TU BASE DE DATOS -->
+            // GRILLA DE 4 COLUMNAS CON LAS PELÍCULAS DE TU BASE DE DATOS -->
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; width: 100%;">
                 @foreach (var peli in peliculasGuardadas)
                 {
                     <NavLink href="/mi-coleccion" style="text-decoration: none; background-color: #1a1c20; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid #333; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
                         <div style="position: relative; height: 160px; width: 100%;">
                             <img src="@peli.Imagen" alt="@peli.Titulo" style="width: 100%; height: 100%; object-fit: cover;" />
-                            <!-- BARRA DE PROGRESO ROJA DECORATIVA -->
+                                                     
                             <div style="position: absolute; bottom: 0; left: 0; height: 4px; width: 75%; background-color: #e50914;"></div>
                         </div>
                         <div style="padding: 12px;">
@@ -58,6 +58,7 @@
     </main>
 
 </div>
+
 
 @code {
     private List<MovieZone.PeliculaColeccion>? peliculasGuardadas;
