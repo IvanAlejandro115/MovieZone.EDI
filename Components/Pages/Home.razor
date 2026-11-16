@@ -1,6 +1,6 @@
 ﻿@page "/"
 @rendermode InteractiveServer
-@inject NavigationManager Navigation /*    conector para hacer el enrrutamiento y la llamada     */
+@inject NavigationManager Navigation /* conector que establece navegacion programatica para hacer el enrrutamiento y la llamada     */
 @using MovieZone.Components.Pages
 
 <div style="display: flex; flex-direction: column; width: 100%; padding: 20px; box-sizing: border-box;">
@@ -31,7 +31,7 @@
         <!-- GRILLA DE PELÍCULAS -->
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; width: 100%;">
 
-            @foreach (var peli in PeliculasFiltradas)
+            @foreach (var peli in PeliculasFiltradas) 
             {
                 <NavLink href="@peli.Url" style="text-decoration: none; cursor: pointer;">
                     <TarjetaPelicula Titulo="@peli.Titulo" 
@@ -109,7 +109,7 @@
         // Verifica si existe al menos una coincidencia
         bool existeCoincidencia = MisPeliculas.Any(p => p.Titulo.Contains(consulta, StringComparison.OrdinalIgnoreCase));
 
-        if (!existeCoincidencia)
+        if (!existeCoincidencia) // filtra y redirige al cartel de error con mensaje personalizados si no hay coincidencias
         {
             string mensaje = $"No se encontraron películas que coincidan con '{consulta}'.";
             Navigation.NavigateTo($"/cartel-error/{Uri.EscapeDataString(mensaje)}");

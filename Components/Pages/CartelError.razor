@@ -1,7 +1,7 @@
-@page "/cartel-error"
-@page "/cartel-error/{MensajeError}"
+@page "/cartel-error" 
+@page "/cartel-error/{MensajeError}" // routing: que permite pasar un mensaje de error personalizado a la página de error al llamarla desde otra página. El parámetro MensajeError se utiliza para mostrar un mensaje específico en el cartel de error.
 @rendermode InteractiveServer
-@inject IJSRuntime JS // inyección de IJSRuntime para ejecutar comandos de JavaScript desde blazor*/
+@inject IJSRuntime JS // inyección de IJSRuntime para ejecutar comandos de JavaScript e interactuar con el navegador web //
 
 <div style="display: flex; justify-content: center; align-items: center; min-height: 80vh; width: 100%; padding: 20px; box-sizing: border-box; font-family: system-ui, sans-serif;">
     
@@ -16,9 +16,9 @@
         <h2 style="color: #dc3545; font-size: 1.8rem; font-weight: 700; margin: 0 0 15px 0;">
             ¡Error de Validación!
         </h2>
-
+        
         <p style="color: #cfd2d6; font-size: 1.05rem; line-height: 1.5; margin-bottom: 25px;">
-            @(string.IsNullOrWhiteSpace(MensajeError) 
+            @(string.IsNullOrWhiteSpace(MensajeError) // 
                 ? "El título ingresado no coincide con ninguna película registrada en el sistema." 
                 : MensajeError)
         </p>
@@ -33,7 +33,7 @@
 </div>
 
 
-@code {
+@code { 
     [Parameter]
     public string? MensajeError { get; set; }
 

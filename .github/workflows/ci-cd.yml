@@ -1,0 +1,41 @@
+name: Build y Deploy Automático - MovieZone
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Descargar el código del repositorio
+    - name: Checkout del código
+      uses: actions/checkout@v4
+
+    # 2. Instalar .NET 9.0 en el servidor de GitHub
+    - name: Configurar .NET 9.0
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    # 3. Restaurar paquetes NuGet
+    - name: Restaurar dependencias
+      run: dotnet restore
+
+    # 4. Compilar el proyecto en modo Release (CI)
+    - name: Build de la aplicación
+      run: dotnet build --no-restore --configuration Release
+
+    # 5. Disparar el Deploy automático en Render (CD)
+    - name: Trigger Deploy en Render
+      if: github.ref == 'refs/heads/master' && success()
+      run: |
+        if [ -n "${{ secrets.RENDER_DEPLOY_HOOK }}" ]; then
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+        else
+          echo "Build exitoso. Configura RENDER_DEPLOY_HOOK en Secrets para activar el deploy automático."
+        fi
+        

@@ -1,11 +1,11 @@
-@page "/mi-coleccion"
+@page "/mi-coleccion"  // routing: ruta de la página para acceder a la colección personal de películas */
 @rendermode InteractiveServer
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.EntityFrameworkCore
 @using MovieZone
 @using MovieZone.Components.Pages
 @inject AppDbContext DbContext // conector para la base de datos SQLite */
-@inject NavigationManager Navigation // conector para hacer el enrrutamiento y la llamada con el cartel de error //
+@inject NavigationManager Navigation /* conector que establece navegacion programatica para hacer el enrrutamiento y la llamada     */
 
 
 <div style="display: flex; flex-direction: column; width: 100%; padding: 20px; box-sizing: border-box; font-family: system-ui, sans-serif; color: #ffffff;">
@@ -218,7 +218,7 @@
         {
             string mensaje = $"El título '{nuevaPeli.Titulo}' no coincide con ninguna de las películas disponibles en el catálogo oficial.";
             Navigation.NavigateTo($"/cartel-error/{Uri.EscapeDataString(mensaje)}"); 
-            // Enrrutamiento con el cartel de error y mensaje dinamico.
+            // Se ejecuta el llamado al cartel de error y le añade un mensaje personalizado.
             return; 
             // Cancela el guardado y muestra el cartel de error
         }

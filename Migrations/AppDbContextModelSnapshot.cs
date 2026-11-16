@@ -6,9 +6,9 @@ using MovieZone;
 
 #nullable disable
 
-namespace MovieZone.Migrations
+namespace MovieZone.Migrations 
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(AppDbContext))] // Indica que esta clase es un snapshot del modelo de datos para el contexto AppDbContext
     partial class AppDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
