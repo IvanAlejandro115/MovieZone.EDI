@@ -92,8 +92,14 @@
 - **Control de Versiones:** Historial de cambios limpio en Git estructurado bajo el 
    estándar de *Conventional Commits* (`feat:`, `style:`, `fix:`).
 
----
+- **Repository Github con historia limpio:** se guardo internamente por un Gitcommit y viajo a internet en 
+  el repositorio de github. Mí proyecto está en github con conmuta estandarizados.
 
+- **CI/CD con GitHub Actions: build y deploy automático:** Configurar un flujo de integración y despliegue 
+  continuo (en la carpeta .github/workflows/) que compile y publique la aplicación de manera automática al subir cambios. 
 
+  Al esa carpeta, cada push a máster dispara automáticamente un servidor en la nube de Github restaura paquetes y compila la app.
+  La carpeta .github/workflows/ci-cd.yml que escucha cada push en la rama master.
+  Cuando subo cambios, GitHub ejecuta dotnet restore y dotnet build --configuration Release para validar que no haya errores de compilación
 
 La plataforma se abrirá de forma automática en su navegador en la dirección local estándar: `http://localhost:5032` este es el readme que tengo, es de antes de hacer todos los cambios que hicimos. podrias hacerlo de nuevo con todo lo que incluimos, redactalo de forma clara y simple
